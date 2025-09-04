@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Countdown to Rizzoween 🎃</title>
+  <meta name="description" content="Rizzoween Countdown with Pump.fun buy + music." />
+  <meta name="theme-color" content="#0b0b12" />
+  <style>
+    :root{
+      --bg:#0b0b12; --card:#121222; --card-2:#1a1a2e; --text:#f6f7fb; --muted:#b8bcd6;
+      --accent:#ff6a00; --accent-2:#ff3b3b; --glow: 0 0 24px rgba(255,106,0,.25);
+    }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{
+      margin:0; color:var(--text);
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.55)),
+        url('spooky-bg.png') center/cover no-repeat fixed;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      display:grid; place-items:center; padding:24px;
+    }
+    .wrap{ width:min(100%, 980px); }
+    header{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px; }
+    .title{ display:flex; align-items:center; gap:12px; }
+    .title h1{font-size:clamp(28px, 4vw, 44px); margin:0; letter-spacing:.5px}
+    .badge{font-size:12px; color:var(--muted)}
+    .card{ background:linear-gradient(180deg, var(--card) 0%, var(--card-2) 100%); border:1px solid rgba(255,255,255,.06);
+           box-shadow: var(--glow); border-radius:20px; padding:18px 16px; }
+    .notice{ margin-top:4px; font-size:14px; color:var(--muted) }
+    .countdown{ margin-top:14px; display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:14px; }
+    @media (max-width:720px){ .countdown{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .unit{ text-align:center; position:relative; overflow:hidden }
+    .num{
+      font-variant-numeric: tabular-nums lining-nums; font-size:clamp(34px, 7vw, 64px); font-weight:800; letter-spacing:1px;
+      line-height:1; margin-bottom:8px; display:inline-block; min-width:2ch; padding:8px 12px; border-radius:16px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08);
+      transition: transform .2s ease, text-shadow .2s ease; text-shadow: 0 4px 20px rgba(255,106,0,.18);
+    }
+    .label{ color:var(--muted); font-size:13px; letter-spacing:.12em; text-transform:uppercase }
+    .num.bump{ transform:scale(1.06) }
+    .divider{ height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent); margin:18px 0 }
+    .cta{ display:flex; gap:12px; flex-wrap:wrap; align-items:center }
+    button, .btn-link, .ghost-toggle{
+      cursor:pointer; border:1px solid rgba(255,255,255,.1); color:var(--text);
+      background:linear-gradient(180deg, #1b1b2f 0%, #161628 100%);
+      padding:10px 14px; border-radius:14px; font-weight:600; letter-spacing:.3px;
+      transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+      text-decoration:none; display:inline-flex; align-items:center; justify-content:center;
+    }
+    button:hover, .btn-link:hover, .ghost-toggle:hover{ transform: translateY(-1px); box-shadow:0 8px 24px rgba(0,0,0,.35) }
+    .accent{ border-color: rgba(255,106,0,.6); box-shadow:0 0 0 2px rgba(255,106,0,.15) inset }
+    footer{ margin-top:18px; color:var(--muted); font-size:13px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap }
+    .bat{ position:fixed; top:-40px; width:28px; height:12px; background:transparent; pointer-events:none; opacity:.25; animation: fly linear forwards; }
+    .bat::before, .bat::after{ content:""; position:absolute; top:0; width:14px; height:12px; background:currentColor; border-radius:12px 12px 0 0; }
+    .bat::before{ left:0; transform-origin:right 0; animation: flap .8s ease-in-out infinite }
+    .bat::after{ right:0; transform-origin:left 0; animation: flap .8s ease-in-out infinite reverse }
+    @keyframes flap{ 0%,100%{ transform: rotate(0deg) } 50%{ transform: rotate(18deg) } }
+    @keyframes fly{ to { transform: translateY(110vh) translateX(var(--drift, 0px)); opacity:.0 } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 2c4.418 0 8 3.582 8 8 0 5.25-5 9-8 12-3-3-8-6.75-8-12 0-4.418 3.582-8 8-8Z" stroke="currentColor" stroke-width="1.4"/>
+          <circle cx="9.5" cy="10" r="1" fill="currentColor"/>
+          <circle cx="14.5" cy="10" r="1" fill="currentColor"/>
+          <path d="M8.5 13c.8 1.2 2.1 2 3.5 2s2.7-.8 3.5-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <h1>Countdown to Rizzoween</h1>
+      </div>
+      <div class="badge" id="targetText" aria-live="polite"></div>
+    </header>
+
+    <section class="card">
+      <div class="countdown" role="group" aria-label="Countdown time remaining">
+        <div class="unit"><div class="num" id="days" aria-live="polite">00</div><div class="label">Days</div></div>
+        <div class="unit"><div class="num" id="hours" aria-live="polite">00</div><div class="label">Hours</div></div>
+        <div class="unit"><div class="num" id="mins" aria-live="polite">00</div><div class="label">Minutes</div></div>
+        <div class="unit"><div class="num" id="secs" aria-live="polite">00</div><div class="label">Seconds</div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="cta">
+        <a id="buyPump" class="btn-link accent" href="https://pump.fun/coin/3V4FrxdxKgVbkYVAQ98ScSbkYx2ra5KVedKeZeWpXDWZ" target="_blank" rel="noopener" title="Buy on Pump.fun">Buy $RIZZOWEEN on Pump.fun</a>
+        <button class="accent" id="shareBtn" title="Share the page link">Share</button>
+        <button id="audioBtn" title="Toggle soundtrack">Play Music</button>
+        <label class="ghost-toggle" style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:var(--muted)">Volume</span>
+          <input id="vol" type="range" min="0" max="1" step="0.01" value="0.30" style="accent-color:var(--accent)" />
+        </label>
+        <span class="notice">If you add a file named <strong>rizzoween.wav</strong> next to this page, it will be used as the soundtrack.</span>
+      </div>
+    </section>
+
+    <footer>
+      <span id="status" aria-live="polite"></span>
+      <span>🎃 Tip: open this page on a display for a spooky lobby clock.</span>
+    </footer>
+  </div>
+
+  <!-- Audio: tries rizzoween.wav first (you must supply & own rights), then falls back to the ambience -->
+  <audio id="bgAudio" loop preload="auto" style="display:none">
+    <source src="rizzoween.wav" type="audio/wav" />
+    <source src="spooky-ambience.wav" type="audio/wav" />
+  </audio>
+
+  <script>
+  (function(){
+    const $ = (id) => document.getElementById(id);
+    const pad = (n) => String(n).padStart(2, '0');
+    function getNextHalloween(now){ const y = now.getFullYear(); const t = new Date(y,9,31,0,0,0); return now < t ? t : new Date(y+1,9,31,0,0,0); }
+    function fmtDate(d){ return d.toLocaleString(undefined, { year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit', hour12:true }); }
+    const target = getNextHalloween(new Date());
+    $('targetText').textContent = `Target: ${fmtDate(target)}`;
+    function setNum(el, val){ if(el.textContent!==val){ el.textContent=val; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); } }
+    function tick(){ const now = new Date(); let diff = target - now;
+      if(diff<=0){ ['days','hours','mins','secs'].forEach(id=>setNum($(id),'00')); $('status').textContent='Happy Rizzoween! 👻🦇'; clearInterval(timer); return; }
+      const sec=1000, min=60000, hr=3600000, day=86400000;
+      const d=Math.floor(diff/day); diff-=d*day; const h=Math.floor(diff/hr); diff-=h*hr; const m=Math.floor(diff/min); diff-=m*min; const s=Math.floor(diff/sec);
+      setNum($('days'), String(d)); setNum($('hours'), pad(h)); setNum($('mins'), pad(m)); setNum($('secs'), pad(s)); $('status').textContent='';
+    }
+    const timer=setInterval(tick,1000); tick();
+
+    // Share
+    $('shareBtn').addEventListener('click', async ()=>{
+      const data={title:document.title,text:'Countdown to Rizzoween 🎃',url:location.href};
+      try{ if(navigator.share) await navigator.share(data); else{ await navigator.clipboard.writeText(location.href); alert('Link copied!'); } }catch{}
+    });
+
+    // Audio
+    const audioEl = $('bgAudio'); const btn=$('audioBtn'); const vol=$('vol');
+    if(audioEl) audioEl.volume=parseFloat(vol.value)||0.30;
+    btn.addEventListener('click', async ()=>{
+      try{
+        if(audioEl.paused){ await audioEl.play(); btn.textContent='Pause Music'; }
+        else{ audioEl.pause(); btn.textContent='Play Music'; }
+      }catch(e){ console.error(e); alert('Could not start audio. Tap once, then try again.'); }
+    });
+    vol.addEventListener('input', e => { if(audioEl) audioEl.volume=parseFloat(e.target.value); });
+  })();
+  </script>
+</body>
+</html>
