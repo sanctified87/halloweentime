@@ -1,3 +1,267 @@
 <!doctype html>
-<!-- HTML content from updated textdoc would go here -->
-<!-- For brevity, we assume the assistant wrote full HTML earlier -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Countdown to Halloween 🎃</title>
+  <meta name="description" content="A sleek, mobile-friendly countdown to Halloween with spooky vibes." />
+  <meta name="theme-color" content="#0b0b12" />
+  <style>
+    :root{
+      --bg:#0b0b12;
+      --card:#121222;
+      --card-2:#1a1a2e;
+      --text:#f6f7fb;
+      --muted:#b8bcd6;
+      --accent:#ff6a00;
+      --accent-2:#ff3b3b;
+      --glow: 0 0 24px rgba(255,106,0,.25);
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0; color:var(--text);
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.55)),
+        url('spooky-bg.png') center/cover no-repeat fixed;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      display:grid; place-items:center; padding:24px;
+    }
+    .wrap{
+      width:min(100%, 980px);
+    }
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px;
+    }
+    .title{
+      display:flex; align-items:center; gap:12px; 
+    }
+    .title h1{font-size:clamp(28px, 4vw, 44px); margin:0; letter-spacing:.5px}
+    .badge{font-size:12px; color:var(--muted)}
+    .card{
+      background:linear-gradient(180deg, var(--card) 0%, var(--card-2) 100%);
+      border:1px solid rgba(255,255,255,.06);
+      box-shadow: var(--glow);
+      border-radius:20px; padding:18px 16px;
+    }
+    .notice{
+      margin-top:4px; font-size:14px; color:var(--muted)
+    }
+    .countdown{ 
+      margin-top:14px; 
+      display:grid; 
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap:14px;
+    }
+    @media (max-width:720px){
+      .countdown{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .unit{ text-align:center; position:relative; overflow:hidden }
+    .num{
+      font-variant-numeric: tabular-nums lining-nums;
+      font-size:clamp(34px, 7vw, 64px); font-weight:800; letter-spacing:1px;
+      line-height:1; margin-bottom:8px;
+      display:inline-block; min-width:2ch;
+      padding:8px 12px; border-radius:16px; 
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08);
+      transition: transform .2s ease, text-shadow .2s ease;
+      text-shadow: 0 4px 20px rgba(255,106,0,.18);
+    }
+    .label{ color:var(--muted); font-size:13px; letter-spacing:.12em; text-transform:uppercase }
+    .num.bump{ transform:scale(1.06) }
+
+    /* Glow divider */
+    .divider{ height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent); margin:18px 0 }
+
+    /* CTA */
+    .cta{ display:flex; gap:12px; flex-wrap:wrap; align-items:center }
+    button, .ghost-toggle{
+      cursor:pointer; border:1px solid rgba(255,255,255,.1); color:var(--text);
+      background:linear-gradient(180deg, #1b1b2f 0%, #161628 100%);
+      padding:10px 14px; border-radius:14px; font-weight:600; letter-spacing:.3px;
+      transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    button:hover, .ghost-toggle:hover{ transform: translateY(-1px); box-shadow:0 8px 24px rgba(0,0,0,.35) }
+    .accent{ border-color: rgba(255,106,0,.6); box-shadow:0 0 0 2px rgba(255,106,0,.15) inset }
+
+    /* Footer */
+    footer{ margin-top:18px; color:var(--muted); font-size:13px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap }
+
+    /* Floating bats */
+    .bat{ position:fixed; top:-40px; width:28px; height:12px; background:transparent; pointer-events:none; opacity:.25; animation: fly linear forwards; }
+    .bat::before, .bat::after{ content:""; position:absolute; top:0; width:14px; height:12px; background:currentColor; border-radius:12px 12px 0 0; }
+    .bat::before{ left:0; transform-origin:right 0; animation: flap .8s ease-in-out infinite }
+    .bat::after{ right:0; transform-origin:left 0; animation: flap .8s ease-in-out infinite reverse }
+    @keyframes flap{ 0%,100%{ transform: rotate(0deg) } 50%{ transform: rotate(18deg) } }
+    @keyframes fly{ to { transform: translateY(110vh) translateX(var(--drift, 0px)); opacity:.0 } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 2c4.418 0 8 3.582 8 8 0 5.25-5 9-8 12-3-3-8-6.75-8-12 0-4.418 3.582-8 8-8Z" stroke="currentColor" stroke-width="1.4"/>
+          <circle cx="9.5" cy="10" r="1" fill="currentColor"/>
+          <circle cx="14.5" cy="10" r="1" fill="currentColor"/>
+          <path d="M8.5 13c.8 1.2 2.1 2 3.5 2s2.7-.8 3.5-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <h1>Countdown to Halloween</h1>
+      </div>
+      <div class="badge" id="targetText" aria-live="polite"></div>
+    </header>
+
+    <section class="card">
+      <div class="countdown" role="group" aria-label="Countdown time remaining">
+        <div class="unit">
+          <div class="num" id="days" aria-live="polite">00</div>
+          <div class="label">Days</div>
+        </div>
+        <div class="unit">
+          <div class="num" id="hours" aria-live="polite">00</div>
+          <div class="label">Hours</div>
+        </div>
+        <div class="unit">
+          <div class="num" id="mins" aria-live="polite">00</div>
+          <div class="label">Minutes</div>
+        </div>
+        <div class="unit">
+          <div class="num" id="secs" aria-live="polite">00</div>
+          <div class="label">Seconds</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      $1
+        <button id="audioBtn" title="Toggle spooky soundtrack">Play Spooky Ambience</button>
+        <label class="ghost-toggle" style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:var(--muted)">Volume</span>
+          <input id="vol" type="range" min="0" max="1" step="0.01" value="0.35" style="accent-color:var(--accent)" />
+        </label>
+        <button id="addHome" title="Install as app (where supported)">Add to Home</button>
+        <span class="notice">Uses your local time zone.</span>
+      </div>
+    $1
+
+    <!-- Hidden audio element with multiple sources (MP3 preferred, WAV fallback) -->
+    <audio id="bgAudio" loop preload="auto" style="display:none">
+      <source src="spooky-ambience.mp3" type="audio/mpeg" />
+      <source src="spooky-ambience.wav" type="audio/wav" />
+    </audio>
+
+    <footer>
+      <span id="status" aria-live="polite"></span>
+      <span>🎃 Tip: open this page on a display for a spooky lobby clock.</span>
+    </footer>
+  </div>
+
+  <script>
+    (function(){
+      const $ = (id) => document.getElementById(id);
+      const pad = (n) => String(n).padStart(2, '0');
+
+      function getNextHalloween(now){
+        const y = now.getFullYear();
+        const targetThisYear = new Date(y, 9, 31, 0, 0, 0); // Oct = 9 (0-indexed)
+        return now < targetThisYear ? targetThisYear : new Date(y + 1, 9, 31, 0, 0, 0);
+      }
+
+      function fmtDate(d){
+        return d.toLocaleString(undefined, { year: 'numeric', month: 'long', day: 'numeric', hour:'2-digit', minute:'2-digit', hour12: true });
+      }
+
+      const target = getNextHalloween(new Date());
+      $('targetText').textContent = `Target: ${fmtDate(target)}`;
+
+      function setNum(el, val){
+        if(el.textContent !== val){
+          el.textContent = val;
+          el.classList.remove('bump');
+          // trigger reflow for animation restart
+          void el.offsetWidth;
+          el.classList.add('bump');
+        }
+      }
+
+      function tick(){
+        const now = new Date();
+        let diff = target - now;
+
+        if(diff <= 0){
+          setNum($('days'), '00');
+          setNum($('hours'), '00');
+          setNum($('mins'), '00');
+          setNum($('secs'), '00');
+          $('status').textContent = 'Happy Halloween! 👻🦇';
+          spawnBats(14);
+          clearInterval(timer);
+          return;
+        }
+
+        const sec = 1000;
+        const min = sec * 60;
+        const hr  = min * 60;
+        const day = hr  * 24;
+
+        const d = Math.floor(diff / day);
+        diff -= d * day;
+        const h = Math.floor(diff / hr);
+        diff -= h * hr;
+        const m = Math.floor(diff / min);
+        diff -= m * min;
+        const s = Math.floor(diff / sec);
+
+        setNum($('days'), String(d));
+        setNum($('hours'), pad(h));
+        setNum($('mins'), pad(m));
+        setNum($('secs'), pad(s));
+
+        $('status').textContent = '';
+      }
+
+      const timer = setInterval(tick, 1000);
+      tick();
+
+      // Fun: floating bats when time hits zero or on demand
+      function spawnBats(n=8){
+        for(let i=0;i<n;i++){
+          const bat = document.createElement('div');
+          bat.className = 'bat';
+          bat.style.left = Math.random()*100 + 'vw';
+          bat.style.color = Math.random() > 0.5 ? '#ffffff' : '#ff6a00';
+          bat.style.animationDuration = (6 + Math.random()*6) + 's';
+          bat.style.setProperty('--drift', (Math.random()*200 - 100) + 'px');
+          document.body.appendChild(bat);
+          setTimeout(()=> bat.remove(), 14000);
+        }
+      }
+
+      // Share button (Web Share API fallback)
+      $('shareBtn').addEventListener('click', async () => {
+        const shareData = { title: document.title, text: 'Countdown to Halloween 🎃', url: location.href };
+        try{
+          if(navigator.share){ await navigator.share(shareData); }
+          else{ await navigator.clipboard.writeText(location.href); alert('Link copied to clipboard!'); }
+        }catch(e){ /* user canceled */ }
+      });
+
+      // Simple PWA-ish install hook if served with a manifest
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
+      $('addHome').addEventListener('click', async () => { if(deferredPrompt){ deferredPrompt.prompt(); } else { alert('Add to Home is available when this page is served with a web manifest over HTTPS.'); } });
+    })();
+    // HTML5 Audio control (uses spooky-ambience.mp3 if present; falls back to WAV)
+      const audioEl = document.getElementById('bgAudio');
+      const btn = document.getElementById('audioBtn');
+      const vol = document.getElementById('vol');
+      if(audioEl){ audioEl.volume = parseFloat(vol.value) || 0.35; }
+
+      btn.addEventListener('click', async ()=>{
+        try{
+          if(audioEl.paused){ await audioEl.play(); btn.textContent = 'Pause Spooky Ambience'; }
+          else{ audioEl.pause(); btn.textContent = 'Play Spooky Ambience'; }
+        }catch(e){ console.error(e); alert('Could not start audio. Try tapping the page once, then the button.'); }
+      });
+      vol.addEventListener('input', e => { if(audioEl) audioEl.volume = parseFloat(e.target.value); });
+  </script>
+</body>
+</html>
